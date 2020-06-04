@@ -65,6 +65,7 @@ router.post("/", upload.single('file'),  function(req, resp, next){
     let resposta = new RespostaClass();
     console.log("req file -> ");
     if(req.file != null){
+        console.log("AAA >> ",req.body);
         GaleriaModel.addVideo(req.body, function(error, retorno){
         
         if(error){
@@ -98,6 +99,53 @@ function deleteFile(caminho) {
         console.log("File was deleted");
     }
 }
+
+router.put("/", upload.single('file'),  function(req, resp, next){
+    let resposta = new RespostaClass();
+    
+    GaleriaModel.editVideo(req.body, function(error, retorno){
+    
+    if(error){
+        resposta.error = true;
+        resposta.msg = "Ocorreu um erro";
+        console.log("erro = ", error);
+        deleteFile(req.caminho);
+    }else{
+        if(retorno.affectedRows > 0 ) {
+            resposta.msg = "Alteração realizada com sucesso";
+        } else {
+            resposta.error = true;
+            resposta.msg = "Não foi possível alterar o vídeo";
+            deleteFile(req.caminho);
+            console.log("erro = ", error);
+        }            
+    }
+    console.log('resp',resposta);
+    resp.json(resposta);
+})
+});
+
+router.delete("/:id?", function(req, resp, next){
+    GaleriaModel.deleteVideo(req.params.id,function(error, retorno){
+        let resposta = new RespostaClass();
+
+        if(error){
+            resposta.error = true;
+            resposta.msg = "Ocorreu um erro";
+            console.log("erro = ", error)
+        }else {
+            if(retorno.affectedRows > 0 ) {
+                resposta.msg = "Deleção realizada com sucesso";
+            } else {
+                resposta.error = true;
+                resposta.msg = "Não foi possível deletar o vídeo"
+                console.log("erro: ", error);
+            }
+        }
+
+        resp.json(resposta);
+    });
+});
 
 
 module.exports = router;   
