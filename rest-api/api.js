@@ -18,11 +18,9 @@ router.get("/", (req, resp) => resp.json({
 }))
 
 
-
-
-
 api.use("/", router);
 api.use("/galeria", galeriaRouter);
 api.use("/public", express.static(__dirname+"/public"));
+
 api.listen(port);
 console.log('API Rodando');
