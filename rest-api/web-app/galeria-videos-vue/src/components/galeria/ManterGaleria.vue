@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>Manter galeriazinha</div>
 </template>
 
 <script>

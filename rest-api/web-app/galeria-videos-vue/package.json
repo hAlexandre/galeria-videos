@@ -35,7 +35,7 @@
     },
     "rules": {
       "no-console": "off",
-      "no-unused-vars": 1
+      "no-unused-vars": "off"
     }
   },
   "browserslist": [

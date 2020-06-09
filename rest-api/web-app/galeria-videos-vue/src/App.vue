@@ -1,14 +1,22 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <h1>Apps Vue</h1>
+    <h1>Apps Vues</h1>
     
-    <Home />
-    <ManterGaleria />
-
+    
     <div>
+      <h1>Olá ---- >> </h1>
       <router-view></router-view>
     </div>
+    
+    <h1 style="display: none">
+      <home />
+      <ManterGaleria />
+    </h1>
+      
+      
+    
+    
 
   </div>
   
