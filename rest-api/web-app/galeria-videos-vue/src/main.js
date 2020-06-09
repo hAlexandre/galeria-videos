@@ -5,6 +5,8 @@ import VueRouter from 'vue-router'
 import ManterGaleria from './components/galeria/ManterGaleria.vue'
 import Home from './components/home/Home.vue'
 
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+
 Vue.use(VueRouter);
 
 Vue.config.productionTip = false

@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <h1>Apps Vues</h1>
-    
-    
-    <div>
-      <h1>Olá ---- >> </h1>
-      <router-view></router-view>
+      <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Galeria de vídeos</h5>
+      <nav class="my-2 my-md-0 mr-md-3">     
+        <router-link class = "p-2 text-dark" to = "Home">Home</router-link>
+        <router-link class = "p-2 text-dark" to = "ManterGaleria">Galeria</router-link>
+      </nav>
+      <!--<a class="btn btn-outline-primary" href="#">Sign up</a>-->
     </div>
+
+    <div class = "container">
+      <router-view></router-view>
+    </div>   
     
-    <h1 style="display: none">
-      <home />
-      <ManterGaleria />
-    </h1>
       
       
     
@@ -31,8 +31,8 @@ import Home from './components/home/Home.vue'
 export default {
   name: 'App',
   components: {
-    Home,
-    ManterGaleria
+    //Home,
+    //ManterGaleria
     
   }
 }
@@ -40,11 +40,6 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  
 }
 </style>
