@@ -8,7 +8,7 @@ import Home from './components/home/Home.vue'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 import GaleriaService from './service/GaleriaService'
-import ConfigClass from './classes/ConfigClass'
+import {ConfigClass} from './classes/ConfigClass'
 
 let server = `${ConfigClass.getUrlApi().toString}`;
 

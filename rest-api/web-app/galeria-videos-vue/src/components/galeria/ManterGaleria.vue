@@ -1,8 +1,14 @@
 <template>
   <div>
-    <h4>Cadastro de Vídeos</h4>
+    <div class = "form-inline" >
+      <h4>Cadastro de Vídeos</h4>
+      <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-lm-4">Novo Vídeo</button>
+    </div>
+
+    
+    
     <div id = 'msg'></div>
-    <div id = 'listagem'>
+    <div id = 'listagem' class = 'format' v-show="showList">
 
     </div>
     <div id = 'galeria-listagem'>
@@ -30,7 +36,7 @@
       </div> 
     </div>
 
-    <div id = "formulario">
+    <div id = "formulario" v-show="showList">
       <div class = "row">
         <div class = "col-sm">
           <form method = "POST" action="/" id = "galeriaForm">
@@ -54,7 +60,7 @@
               <video src="/" width="180" height="155" controls></video>
             </div>
 
-            <div class = "form-inline">
+            <div class = "form-inline" >
                 <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-sm-2">Enviar</button>
                 <button id="btn-cancelar" type="button" class="btn btn-primary">Cancelar</button>
               </div>
@@ -78,6 +84,11 @@ export default {
   name: 'ManterGaleria',
   props: {
     
+  },
+  data( ){
+    return {
+      showList: true
+    }
   }
 }
 </script>
