@@ -4,15 +4,16 @@
 
     <div id='msg' v-html="mensagem"></div> 
 
-    <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-lm-4">Novo Vídeo</button>
+    <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-lm-4"
+    v-on:click="switchForm()" v-show="showList">
+      Novo Vídeo
+    </button>
 
     
     
     <div id = 'msg'></div>
-    <div id = 'listagem' class = 'format' v-show="showList">
-
-    </div>
-    <div id = 'galeria-listagem'>
+    
+    <div id = 'galeria-listagem' class = 'format' v-show="showList">
       <div class = "table-responsive">
         <table class = "table table-striped table-bordered table-hover table-sm">
           <thead>
@@ -41,30 +42,26 @@
       <div class = "row">
         <div class = "col-sm">
           <form method = "POST" action="/" id = "galeriaForm">
-
-            <div class = "form-group">
-              <label for="id">ID</label>
-              <input type="number" class="form-control" id="id_video" name="id_video" disabled>
-            </div>
-
             <div class = "form-group">
               <label for="id">Título</label>
               <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Insira um titulo">
             </div>
 
-            <div class = "form-group">
-              <label for="video">Vídeo</label>
-              <input type="file" class="form-control-file" id="arquivo" name="arquivo">
+            <div class = "form-group">              
+              <input type="file" class="form-control-file" id="arquivo" 
+              v-on:change="loadVideo($/event)"
+              ref="arquivo"
+              name="arquivo">
             </div>
 
             <div class = "form-group">
-              <video src="/" width="180" height="155" controls></video>
+              <video v-bind:src="videoUrl" width="180" height="155" controls></video>
             </div>
 
             <div class = "form-inline" >
                 <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-sm-2">Enviar</button>
-                <button id="btn-cancelar" type="button" class="btn btn-primary">Cancelar</button>
-              </div>
+                <button id="btn-cancelar" type="button" class="btn btn-primary"  v-on:click="switchForm()">Cancelar</button>
+            </div>
               
 
           </form>
@@ -90,7 +87,9 @@ export default {
     return {
       showList: true,
       list: null,
-      mensagem: ""
+      mensagem: "",
+      videoUrl: "",
+      videoFile: ""
     }
   },
 
@@ -130,12 +129,29 @@ export default {
     },
     cleanMsgAlert() {
       this.mensagem = "";
+    },
+    switchForm() {
+      this.showList = !this.showList;
+      this.cleanMsgAlert();
+    },
+    
+    loadVideo (){
+      if(this.$refs.arquivo.files.length > 0) {
+        const reader = new FileReader();
+        const file = this.$refs.arquivo.files[0];
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const dataUrl = reader.result;
+          this.videoUrl = dataUrl;
+          this.videoFile = file;
+        }
+      }
     }
 
-
   },
+
   mounted(){
-    this.listData();
+      this.listData();
   }
 }
 </script>

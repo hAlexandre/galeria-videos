@@ -10,13 +10,21 @@ export default class GaleriaService {
 
     }
     
-    static getAll(){
-        
-        console.log(caminho);
+    static getAll(){        
+        //console.log(caminho);
         return fetch(caminho).then(resposta => {  
             //console.log(resposta.getUrlApi.toString() + " AOK");
             return resposta.json();
         })
+    }
+
+    static addVideo(formData){
+        return fetch(caminho, 
+            {
+                method: "POST",
+                body: formData
+            }        
+        )
     }
 
 }
