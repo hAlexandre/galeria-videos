@@ -3,6 +3,7 @@ const db = require('../banco/dbConnect');
 module.exports = class GaleriaModel{
 
     static getAll(callback){
+        console.log("OI");
         return db.query("SELECT * FROM galeria_video", callback);
     }
 

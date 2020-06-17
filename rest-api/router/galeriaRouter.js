@@ -10,7 +10,7 @@ let fs = require ('fs');
 router.get("/", function(req, resp, next){
     GaleriaModel.getAll(function(error, retorno){
         let resposta = new RespostaClass();
-
+        console.log("CHAMOU");
         if(error){
             resposta.error = true;
             resposta.msg = "Ocorreu um erro";
@@ -18,7 +18,8 @@ router.get("/", function(req, resp, next){
         }else{
             resposta.dados = retorno;
         }
-
+        console.log("HUUH");
+        //console.log(resposta);
         resp.json(resposta);
     });
 });

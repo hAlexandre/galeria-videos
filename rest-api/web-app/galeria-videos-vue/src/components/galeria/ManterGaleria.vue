@@ -24,10 +24,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>ID</td>
-              <td>Título</td>
-              <td>Vídeo</td>
+            <tr v-for="item in list" v-bind:key="item">
+              <td>{{item.id_galeria_video}}</td>
+              <td>{{item.titulo}}</td>
+              <td><video v-bind:src="item.caminho" width="180" height="155" controls></video></td>
               <td>Editar</td>
               <td>Deletar</td>
             </tr>
@@ -36,7 +36,7 @@
       </div> 
     </div>
 
-    <div id = "formulario" v-show="showList">
+    <div id = "formulario" v-show="!showList">
       <div class = "row">
         <div class = "col-sm">
           <form method = "POST" action="/" id = "galeriaForm">
@@ -87,8 +87,35 @@ export default {
   },
   data( ){
     return {
-      showList: true
+      showList: true,
+      list: null
     }
+  },
+
+  methods: {
+    listData(){            
+      this.$galeriaService.getAll().then(response => {
+        if(response.erro){
+          console.log("ERROOOOO");
+        } else {
+          console.log("UHUL");
+          
+          this.list = response.dados.map(function(objeto){
+            return { 
+              id_galeria_video: objeto.id_galeria_video,
+              titulo: objeto.titulo,
+              caminho: this + (objeto.caminho? objeto.caminho.substring(1) : objeto.caminho)
+            }
+          } , this.$server);          
+        }
+      }).catch(error => {
+        console.log(error);
+        
+      });
+    }
+  },
+  mounted(){
+    this.listData();
   }
 }
 </script>

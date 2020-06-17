@@ -1,5 +1,7 @@
 export class ConfigClass {
     static getUrlApi() {
-        return 'http://localhost:3000';
+        let url = "http://localhost:3000"
+        //console.log(url+"  -> URL ConfigClass OOOOK");
+        return url;
     }
 }

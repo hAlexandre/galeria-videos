@@ -1,6 +1,8 @@
 import { ConfigClass } from '../classes/ConfigClass'
 
-let caminho = `${ConfigClass.getUrlApi().toString}/galeria/`;
+//let caminho = `${ConfigClass.getUrlApi().toString()}/galeria/`;
+
+let caminho = `${ConfigClass.getUrlApi().toString()}/galeria/`;
 
 export default class GaleriaService {
     constructor()
@@ -8,9 +10,12 @@ export default class GaleriaService {
 
     }
     
-    static getTodos(){
-        return fetch(caminho).then(response => {
-            return response.json();
+    static getAll(){
+        
+        console.log(caminho);
+        return fetch(caminho).then(resposta => {  
+            //console.log(resposta.getUrlApi.toString() + " AOK");
+            return resposta.json();
         })
     }
 
