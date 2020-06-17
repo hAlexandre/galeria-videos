@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div class = "form-inline" >
-      <h4>Cadastro de Vídeos</h4>
-      <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-lm-4">Novo Vídeo</button>
-    </div>
+    <h4>Cadastro de Vídeos</h4>      
+
+    <div id='msg' v-html="mensagem"></div> 
+
+    <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-lm-4">Novo Vídeo</button>
 
     
     
@@ -88,7 +89,8 @@ export default {
   data( ){
     return {
       showList: true,
-      list: null
+      list: null,
+      mensagem: ""
     }
   },
 
@@ -108,11 +110,29 @@ export default {
             }
           } , this.$server);          
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch(response => {
+        console.log(response);
         
       });
+    },
+    showAlert(msg, type) {
+      let dados = "";
+      if (type == "success") {
+        dados =`<div class='alert alert-success' roles='alert'> 
+                  <strong>$(msg)</strong>
+                </div>`;
+      } else if (type == "error") {
+        dados =`<div class='alert alert-danger' roles='alert'> 
+                  <strong>$(msg)</strong>
+                </div>`;
+      }
+      this.mensagem = dados;
+    },
+    cleanMsgAlert() {
+      this.mensagem = "";
     }
+
+
   },
   mounted(){
     this.listData();
