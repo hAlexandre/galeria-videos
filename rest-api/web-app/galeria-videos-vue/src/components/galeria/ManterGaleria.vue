@@ -5,7 +5,7 @@
     <div id='msg' v-html="mensagem"></div> 
 
     <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-lm-4"
-    v-on:click="switchForm()" v-show="showList">
+    v-on:click="switchForm(); setInsert()" v-show="showList">
       Novo Vídeo
     </button>
 
@@ -30,7 +30,9 @@
               <td>{{item.id_galeria_video}}</td>
               <td>{{item.titulo}}</td>
               <td><video v-bind:src="item.caminho" width="180" height="155" controls></video></td>
-              <td>Editar</td>
+              <td><button id="btn-cancelar" type="button" class="btn btn-primary" 
+                   v-on:click="setUpdate(item.id_galeria_video, item.titulo, item.caminho)">Editar</button>
+              </td>
               <td>Deletar</td>
             </tr>
           </tbody>
@@ -41,18 +43,26 @@
     <div id = "formulario" v-show="!showList">
       <div class = "row">
         <div class = "col-sm">
-          <form method = "POST" action="/" id = "galeriaForm" v-on:submit.prevent="save">
-                        
+          <form method = "POST" action="/" id = "galeriaForm" v-on:submit.prevent="checkSaveOrUpdate">                        
+            
+            <div class = "form-group" v-show="isUpdate">
+              <label for="id">ID</label>
+              <input type="text" class="form-control" id="idVideo" name="idVideo"            
+              disabled="true"
+              v-model="register.id_galeria_video"
+              >               
+            </div>
+            
             <div class = "form-group">
               <label for="id">Título</label>
-              <input type="text" class="form-control" id="titulo" name="titulo" 
+              <input type="text" class="form-control" id="videoTitle" name="videoTitle" 
               placeholder="Insira um título" 
               v-model="register.titulo">
             </div>
 
             <div class = "form-group">              
               <input type="file" class="form-control-file" id="arquissvo" 
-              v-on:change="loadVideo($/event)"
+              v-on:change="loadVideo($/event)"            
               ref="arquissvo"
               name="arquissvo">
             </div>
@@ -62,7 +72,7 @@
             </div>
 
             <div class = "form-inline" >
-                <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-sm-2">Enviar</button>
+                <button id="btn-cadastrar" type="submit" class="btn btn-primary mr-sm-2">Salvar</button>
                 <button id="btn-cancelar" type="button" class="btn btn-primary"  v-on:click="switchForm()">Cancelar</button>
             </div>
               
@@ -93,9 +103,11 @@ export default {
       mensagem: "",
       videoUrl: "",
       videoFile: "",
+      isUpdate: false,
+      updateId: null,
       register: {
         titulo: "",
-        id: null
+        id_galeria_video: null,       
       },
       registerFormData: null
     }
@@ -140,7 +152,7 @@ export default {
       this.showList = !this.showList;
       this.cleanMsgAlert();
       
-      //clean form
+      //clear form
       this.videoUrl = "";
       this.videoFile = null;
       this.registerFormData = new FormData();
@@ -149,6 +161,26 @@ export default {
       document.getElementById("galeriaForm").reset();
       
 
+    },
+
+    setUpdate(idVideo, title, filePath) {
+      this.isUpdate = true;
+      this.updateId = idVideo; 
+      this.switchForm();
+      
+      //Setting form
+      
+      //document.getElementById("idVideo").value=this.updateId;
+      console.log(this.updateId);
+      this.registerFormData = new FormData();
+      this.videoFile = filePath;
+      this.videoUrl = filePath;      
+      this.register = { titulo: title, id_galeria_video: this.updateId};
+
+    },
+
+    setInsert() {
+      this.isUpdate = false;
     },
     
     loadVideo (){
@@ -164,13 +196,41 @@ export default {
       }
     },
 
-    save() {
-      
+    checkSaveOrUpdate() {
+      if(this.isUpdate) {
+        this.update()
+      } else {
+        this.save();
+      }
+    },
+
+    update() {
       this.registerFormData = new FormData();
       this.registerFormData.append('titulo', this.register.titulo);
       this.registerFormData.append('file', this.videoFile);
-      this.insert(this.registerFormData);
-    
+      this.registerFormData.append('id_galeria_video', this.updateId);
+
+      
+      this.$galeriaService.editVideo(this.registerFormData).then(response => {         
+        if (this.checkHttpResponse(response)) {         
+          this.listData();
+          this.switchForm();
+          this.showAlert("Atualização realizada com sucesso", "success");
+          
+        }                
+      }).catch(response => {
+        this.showAlert("Erro ao executar a atualização", "error");
+        console.log(response);
+      })
+     
+       
+    },
+
+    save() {    
+      this.registerFormData = new FormData();
+      this.registerFormData.append('titulo', this.register.titulo);
+      this.registerFormData.append('file', this.videoFile);
+      this.insert(this.registerFormData);    
     },
 
     insert(dataForm) {      
@@ -182,12 +242,10 @@ export default {
           this.switchForm();
           this.showAlert("Cadastro realizado com sucesso", "success");
           
-        }
-        
-        
-      }).catch(responsez => {
+        }                
+      }).catch(response => {
         this.showAlert("Erro ao executar o cadastro", "error");
-        console.log(responsez);
+        console.log(response);
       })
     },
 
@@ -202,9 +260,14 @@ export default {
         }
       }
       
+    },
+
+    editVideo(videoId) {
+
     }
 
   },
+  
 
   mounted(){
       this.listData();
