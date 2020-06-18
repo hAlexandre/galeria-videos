@@ -41,17 +41,20 @@
     <div id = "formulario" v-show="!showList">
       <div class = "row">
         <div class = "col-sm">
-          <form method = "POST" action="/" id = "galeriaForm">
+          <form method = "POST" action="/" id = "galeriaForm" v-on:submit.prevent="save">
+                        
             <div class = "form-group">
               <label for="id">Título</label>
-              <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Insira um titulo">
+              <input type="text" class="form-control" id="titulo" name="titulo" 
+              placeholder="Insira um título" 
+              v-model="register.titulo">
             </div>
 
             <div class = "form-group">              
-              <input type="file" class="form-control-file" id="arquivo" 
+              <input type="file" class="form-control-file" id="arquissvo" 
               v-on:change="loadVideo($/event)"
-              ref="arquivo"
-              name="arquivo">
+              ref="arquissvo"
+              name="arquissvo">
             </div>
 
             <div class = "form-group">
@@ -89,18 +92,21 @@ export default {
       list: null,
       mensagem: "",
       videoUrl: "",
-      videoFile: ""
+      videoFile: "",
+      register: {
+        titulo: "",
+        id: null
+      },
+      registerFormData: null
     }
   },
 
   methods: {
     listData(){            
       this.$galeriaService.getAll().then(response => {
-        if(response.erro){
+        if(response.error){
           console.log("ERROOOOO");
         } else {
-          console.log("UHUL");
-          
           this.list = response.dados.map(function(objeto){
             return { 
               id_galeria_video: objeto.id_galeria_video,
@@ -116,13 +122,13 @@ export default {
     },
     showAlert(msg, type) {
       let dados = "";
+      console.log(msg);
       if (type == "success") {
-        dados =`<div class='alert alert-success' roles='alert'> 
-                  <strong>$(msg)</strong>
-                </div>`;
+        dados =`<div class='alert alert-success' roles='alert'>
+                <strong>${msg}</strong></div>`;
       } else if (type == "error") {
         dados =`<div class='alert alert-danger' roles='alert'> 
-                  <strong>$(msg)</strong>
+                  <strong>${msg}</strong>
                 </div>`;
       }
       this.mensagem = dados;
@@ -133,12 +139,22 @@ export default {
     switchForm() {
       this.showList = !this.showList;
       this.cleanMsgAlert();
+      
+      //clean form
+      this.videoUrl = "";
+      this.videoFile = null;
+      this.registerFormData = new FormData();
+      this.register = { titulo: "" };
+      
+      document.getElementById("galeriaForm").reset();
+      
+
     },
     
     loadVideo (){
-      if(this.$refs.arquivo.files.length > 0) {
+      if(this.$refs.arquissvo.files.length > 0) {
         const reader = new FileReader();
-        const file = this.$refs.arquivo.files[0];
+        const file = this.$refs.arquissvo.files[0];
         reader.readAsDataURL(file);
         reader.onload = () => {
           const dataUrl = reader.result;
@@ -146,6 +162,46 @@ export default {
           this.videoFile = file;
         }
       }
+    },
+
+    save() {
+      
+      this.registerFormData = new FormData();
+      this.registerFormData.append('titulo', this.register.titulo);
+      this.registerFormData.append('file', this.videoFile);
+      this.insert(this.registerFormData);
+    
+    },
+
+    insert(dataForm) {      
+      
+      this.$galeriaService.addVideo(dataForm).then(response => {         
+        if (this.checkHttpResponse(response)) {
+          
+          this.listData();
+          this.switchForm();
+          this.showAlert("Cadastro realizado com sucesso", "success");
+          
+        }
+        
+        
+      }).catch(responsez => {
+        this.showAlert("Erro ao executar o cadastro", "error");
+        console.log(responsez);
+      })
+    },
+
+    checkHttpResponse(resp) {              
+      if(resp.error) {        
+        this.showAlert (resp.msg, "error");
+        return false
+      } else {
+        if (resp.msg != null) {          
+          this.showAlert (resp.msg, "success");
+          return true
+        }
+      }
+      
     }
 
   },

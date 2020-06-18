@@ -18,13 +18,15 @@ export default class GaleriaService {
         })
     }
 
-    static addVideo(formData){
+    static addVideo(formData){       
         return fetch(caminho, 
             {
                 method: "POST",
                 body: formData
             }        
-        )
+        ).then(resposta => {
+            return resposta.json();
+        })
     }
 
 }

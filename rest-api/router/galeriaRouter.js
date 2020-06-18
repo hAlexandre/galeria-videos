@@ -63,8 +63,7 @@ var upload = multer({storage: storage});
    
 
 router.post("/", upload.single('file'),  function(req, resp, next){
-    let resposta = new RespostaClass();
-    console.log("req file -> ");
+    let resposta = new RespostaClass();    
     if(req.file != null){
         console.log("AAA >> ",req.body);
         GaleriaModel.addVideo(req.body, function(error, retorno){
@@ -88,9 +87,9 @@ router.post("/", upload.single('file'),  function(req, resp, next){
     })}
     else{
             resposta.error = true;
-            resposta.msg = "Não foi enviado um arquivo";
-            console.log("erro: ", error);
-            req.push;
+            resposta.msg = 'Não foi enviado um arquivo';                                
+            resp.json(resposta);
+
         }
 });
 
