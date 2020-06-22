@@ -18,6 +18,15 @@ export default class GaleriaService {
         })
     }
 
+    static deleteVideo(id){
+        return fetch(caminho+id,
+            {
+                method: "DELETE"               
+            }).then(resposta => {
+                return resposta.json();
+            })
+    }
+
     static editVideo(formData){       
         return fetch(caminho, 
             {

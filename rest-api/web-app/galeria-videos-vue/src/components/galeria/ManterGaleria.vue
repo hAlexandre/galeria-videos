@@ -33,7 +33,9 @@
               <td><button id="btn-cancelar" type="button" class="btn btn-primary" 
                    v-on:click="setUpdate(item.id_galeria_video, item.titulo, item.caminho)">Editar</button>
               </td>
-              <td>Deletar</td>
+              <td><button id="btn-cancelar" type="button" class="btn btn-primary" 
+                   v-on:click="deleteVideo(item.id_galeria_video)">Editar</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -204,6 +206,18 @@ export default {
       }
     },
 
+    deleteVideo(idVideo) {
+      this.$galeriaService.deleteVideo(idVideo).then( response => {
+        if(this.checkHttpResponse(response)) {          
+          this.listData();
+          this.showAlert("Vídeo removido com sucesso", "success");
+        }
+      }).catch(response => {
+        this.showAlert("Erro ao remover", "error");
+      })
+      
+    },
+
     update() {
       this.registerFormData = new FormData();
       this.registerFormData.append('titulo', this.register.titulo);
@@ -260,10 +274,6 @@ export default {
         }
       }
       
-    },
-
-    editVideo(videoId) {
-
     }
 
   },
